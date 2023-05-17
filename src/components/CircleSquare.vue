@@ -29,8 +29,8 @@ export default {
     const canvas = ref(null);
     const ctx = ref(null);
     const alternativeMode = ref(false);
-    const canvasHeight = ref(600);
-    const canvasWidth = ref(600)
+    const canvasHeight = ref(800);
+    const canvasWidth = ref(800)
 
     // Переменные для размера окружности, размера стороны квадрата
     const circleSize = ref(400);
@@ -38,7 +38,8 @@ export default {
 
     //Установка квадрата во центру круга
     const setSquareOnCenter = () => {
-      return circleSize.value;
+      squareX.value = circleSize.value;
+      squareY.value = circleSize.value;
     }
 
     //Координаты квадрата
@@ -109,8 +110,23 @@ export default {
     watch(
         () => circleSize.value,
         () => {
-          squareX.value = setSquareOnCenter();
-          squareY.value = setSquareOnCenter();
+          setSquareOnCenter()
+          setTimeout(
+              () => {
+                if (circleSize.value > 500) {
+                  alert("Окружность не может быть больше 500");
+                  circleSize.value = 500;
+                  setSquareOnCenter()
+                  draw();
+                }
+                if(circleSize.value < squareSize.value + 50) {
+                  alert("Окружность не может быть меньше квадрата");
+                  circleSize.value = squareSize.value + 50;
+                  setSquareOnCenter()
+                  draw();
+                }
+              }, 750
+          )
         }
     )
 
@@ -118,8 +134,7 @@ export default {
     watch(
         () => squareSize.value,
         () => {
-          squareX.value = setSquareOnCenter();
-          squareY.value = setSquareOnCenter();
+          setSquareOnCenter();
           //Если квадрат не влезает в окружность
           if (squareSize.value * Math.sqrt(2) > circleSize.value - 20) {
             alert('Не, не, не, так не пойдёт');
@@ -139,8 +154,7 @@ export default {
         () => {
           canvas.value = document.getElementById("myCanvas");
           ctx.value = canvas.value.getContext("2d");
-          squareX.value = setSquareOnCenter();
-          squareY.value = setSquareOnCenter();
+          setSquareOnCenter();
           draw();
         }
     )
